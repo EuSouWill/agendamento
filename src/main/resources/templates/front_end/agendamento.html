@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agendamento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Sistema de Agendamento Online</h1>
+    <form id="agendamentoForm">
+        <label for="profissional">Profissional:</label>
+        <select id="profissional" required>
+            <option value="">Selecione um profissional</option>
+            <!-- Opções serão carregadas aqui -->
+        </select>
+
+        <label for="dataHora">Data e Hora:</label>
+        <input type="datetime-local" id="dataHora" required />
+
+        <button type="submit">Agendar</button>
+    </form>
+
+    <h2>Lista de Agendamentos</h2>
+    <ul id="agendamentosList">
+        <!-- Agendamentos serão listados aqui -->
+    </ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

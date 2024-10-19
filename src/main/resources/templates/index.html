@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Usuários</title>
+    <script>
+        async function criarUsuario() {
+            const usuario = {
+                email: document.getElementById('email').value,
+                senha: document.getElementById('senha').value,
+                nome: document.getElementById('nome').value,
+                role: document.getElementById('role').value
+            };
+
+            const response = await fetch('http://localhost:8080/usuarios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(usuario)
+            });
+
+            if (response.ok) {
+                alert('Usuário criado com sucesso!');
+                listarUsuarios();
+            } else {
+                alert('Erro ao criar usuário: ' + response.statusText);
+            }
+        }
+
+        async function listarUsuarios() {
+            const response = await fetch('http://localhost:8080/usuarios');
+            const usuarios = await response.json();
+            const usuariosList = document.getElementById('usuarios-list');
+            usuariosList.innerHTML = ''; // Limpa a lista
+
+            usuarios.forEach(usuario => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${usuario.nome} - ${usuario.email} - ${usuario.role}`;
+
+                // Botão de Atualizar
+                const updateButton = document.createElement('button');
+                updateButton.textContent = 'Atualizar';
+                updateButton.onclick = () => atualizarUsuario(usuario.id);
+
+                // Botão de Excluir
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Excluir';
+                deleteButton.onclick = () => excluirUsuario(usuario.id);
+
+                listItem.appendChild(updateButton);
+                listItem.appendChild(deleteButton);
+                usuariosList.appendChild(listItem);
+            });
+        }
+
+        async function atualizarUsuario(id) {
+            const usuario = {
+                email: prompt('Digite o novo email:'),
+                senha: prompt('Digite a nova senha:'),
+                nome: prompt('Digite o novo nome:'),
+                role: prompt('Digite a nova função:')
+            };
+
+            const response = await fetch(`http://localhost:8080/usuarios/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(usuario)
+            });
+
+            if (response.ok) {
+                alert('Usuário atualizado com sucesso!');
+                listarUsuarios();
+            } else {
+                alert('Erro ao atualizar usuário: ' + response.statusText);
+            }
+        }
+
+        async function excluirUsuario(id) {
+            const response = await fetch(`http://localhost:8080/usuarios/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Usuário excluído com sucesso!');
+                listarUsuarios();
+            } else {
+                alert('Erro ao excluir usuário: ' + response.statusText);
+            }
+        }
+
+        // Chama a função para listar os usuários quando a página carregar
+        window.onload = listarUsuarios;
+    </script>
+</head>
+<body>
+<h1>Gerenciamento de Usuários</h1>
+
+<h2>Criar Usuário</h2>
+<label for="email">Email:</label>
+<input type="email" id="email" required><br>
+
+<label for="senha">Senha:</label>
+<input type="password" id="senha" required><br>
+
+<label for="nome">Nome:</label>
+<input type="text" id="nome" required><br>
+
+<label for="role">Função:</label>
+<select id="role">
+    <option value="DENTISTA">Dentista</option>
+    <option value="ADMINISTRADOR">Administrador</option>
+    <option value="SECRETARIA">Secretária</option>
+</select><br>
+
+<button onclick="criarUsuario()">Criar Usuário</button>
+
+<h2>Lista de Usuários</h2>
+<ul id="usuarios-list"></ul>
+
+</body>
+</html>
